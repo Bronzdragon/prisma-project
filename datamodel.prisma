@@ -4,3 +4,11 @@ type User {
   name: String!
   admin: Boolean!
 }
+
+type Post {
+  id: ID! @unique
+  createdAt: DateTime!
+  published: Boolean! @default(value: "false")
+  title: String!
+  author: String!
+}
