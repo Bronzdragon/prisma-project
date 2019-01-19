@@ -9,29 +9,72 @@ fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): voi
 
   let schema: Schema = new Schema(data);
 
+  console.log(`Result:\n${schema}`);
+
 });
 
 class Schema {
-  private models : Array<Model>;
+  private readonly models : Array<Model>;
 
   constructor(datamodel_text: string) {
     const regex: RegExp = /type\s*(\w+)\s*\{([\s\S]+?)\}/gm;
-
+    this.models = [];
 
     let type: Array<string>;
     while(type = regex.exec(datamodel_text)) {
       this.models.push(new Model(type[1], type[2]));
 
-      console.log("Entry: ");
-      console.log(`Name: ${type[1]}\nBody:\n${type[2]}`);
+      // console.log("Entry: ");
+      // console.log(`Name: ${type[1]}\nBody:\n${type[2]}`);
     }
+  }
 
+  public toString(): string {
+    let result: string = "";
+    result += `# timestamp: ${new Date().toString()}\n\n`;
+
+    result += this.models
+      .map(model => model.toString())
+      .join("\n\n");
+
+    return result;
   }
 }
 
 class Model {
   public readonly name: string;
+  private readonly properties: Array<Property>;
+
   constructor(name: string, body: string) {
     this.name = name;
+    const regex: RegExp = /(\w+)\s*:\s*(\S.*\S)\s*/gm;
+
+    this.properties = [];
+
+    let prop:Array<string>;
+    while(prop = regex.exec(body)) {
+      this.properties.push(new Property(prop[1], prop[2]));
+    }
+  }
+
+  public toString(): string {
+    return `Name: ${this.name}\n`
+    + this.properties
+      .map(prop => "\t" + prop.toString())
+      .join("\n");
+  }
+}
+
+class Property {
+  public readonly name: string;
+  public readonly type;
+
+  constructor(name: string, body: string) {
+    this.name = name;
+    this.type = body;
+  }
+
+  public toString(): string {
+    return ( `${this.name} (Type: ${this.type})`);
   }
 }
