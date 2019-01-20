@@ -16,13 +16,12 @@ fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): voi
 });
 
 class Schema {
-  private readonly types : Array<Type>;
-  private readonly enums: Array<Enum>;
+  private readonly types: Array<Type> = [];
+  private readonly enums: Array<Enum> = [];
 
   constructor(datamodel_text: string) {
     const type_regex: RegExp = /type\s*(\w+)\s*\{([\s\S]+?)\}/gm;
     const enum_regex: RegExp = /enum\s*(\w+)\s*\{([\s\S]+?)\}/gm;
-    this.types = [];
 
     // Collect enums
     let enum_info
