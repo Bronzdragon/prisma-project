@@ -88,8 +88,8 @@ abstract class Generic_Field {
     let result = "";
     result += this.TYPENAME;
     if (this.is_required) { result += '!'; }
-    if (this.is_unique) { result += ' @unique'}
-    if (this.has_default) { result += ` @default(value: "${this.default_value}")`}
+    // if (this.is_unique) { result += ' @unique'}
+    // if (this.has_default) { result += ` @default(value: "${this.default_value}")`}
     
     return result;
   }
