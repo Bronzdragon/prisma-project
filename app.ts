@@ -7,7 +7,7 @@ import Field_Types, {
   Int_Field, Float_Field,
   String_Field,
   DateTime_Field,
-  Array_Field,
+  List_Field,
   Object_Field
 } from "./scalar_fields";
 
@@ -24,18 +24,17 @@ fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): voi
 });
 
 class Schema {
-  private readonly models : Array<Model>;
+  private readonly types : Array<Type>;
 
   constructor(datamodel_text: string) {
-    const regex: RegExp = /type\s*(\w+)\s*\{([\s\S]+?)\}/gm;
-    this.models = [];
+    const type_regex: RegExp = /type\s*(\w+)\s*\{([\s\S]+?)\}/gm;
+    this.types = [];
 
-    let type: Array<string>;
-    while(type = regex.exec(datamodel_text)) {
-      this.models.push(new Model(type[1], type[2]));
 
-      // console.log("Entry: ");
-      // console.log(`Name: ${type[1]}\nBody:\n${type[2]}`);
+    // Collect types
+    let type_name: string, type_body: string;
+    while([ , type_name, type_body] = type_regex.exec(datamodel_text)) {
+      this.types.push(new Type(type_name, type_body));
     }
   }
 
@@ -43,7 +42,7 @@ class Schema {
     let result: string = "";
     result += `# timestamp: ${new Date().toString()}\n\n`;
 
-    result += this.models
+    result += this.types
       .map(model => model.toString())
       .join("\n\n");
 
@@ -51,7 +50,7 @@ class Schema {
   }
 }
 
-class Model {
+class Type {
   public readonly name: string;
   private readonly properties: Array<Property>;
 
