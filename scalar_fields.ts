@@ -1,4 +1,4 @@
-type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | Array_Field | Object_Field;
+type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | List_Field | JSON_Field | ENUM_Field | Object_Field;
 export default Field_Types;
 
 abstract class Generic_Field {
@@ -64,6 +64,14 @@ export class List_Field extends Generic_Field {
         
         return new List_Field();
     }
+}
+
+export class JSON_Field extends Generic_Field {
+    protected readonly TYPENAME = "JSON";
+}
+
+export class ENUM_Field extends Generic_Field {
+    protected readonly TYPENAME = "ENUM";
 }
 
 export class Object_Field extends Generic_Field {
