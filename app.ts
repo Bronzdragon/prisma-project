@@ -41,8 +41,17 @@ class Schema {
 
   public toString(): string {
     let result: string = "";
+
+    // Adds meta data
     result += `# timestamp: ${new Date().toString()}\n\n`;
 
+    // Adds additional scalars we support
+    const custom_scalars = ['DateTime', 'Long'];
+    result += custom_scalars
+      .map(scalar => `scalar ${scalar}`)
+      .join("\n\n") + "\n\n";
+
+    // Adds the query block
     result += (
 `type query {
 ${this.types.reduce((acc, curr) => [
@@ -54,6 +63,7 @@ ${this.types.reduce((acc, curr) => [
 
 `);
 
+    // Adds additional scalars we support
     result += this.types
       .map(type => type.toString())
       .join("\n\n");

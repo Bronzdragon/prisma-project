@@ -1,4 +1,4 @@
-type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | List_Field | JSON_Field | Other_Field;
+type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | Long_Field | List_Field | JSON_Field | Other_Field;
 export default Field_Types;
 
 export function getFieldType(body: string): Field_Types {
@@ -31,6 +31,9 @@ export function getFieldType(body: string): Field_Types {
     
     case "datetime":
       return new DateTime_Field(is_required, is_unique, value);
+    
+    case "long":
+      return new Long_Field(is_required, is_unique, value);
     
     case "json":
       return new JSON_Field(is_required, is_unique, value);
@@ -114,6 +117,10 @@ export class String_Field extends Generic_Field {
 
 export class DateTime_Field extends Generic_Field {
   protected readonly TYPENAME = "DateTime";
+}
+
+export class Long_Field extends Generic_Field {
+  protected readonly TYPENAME = "Long";
 }
 
 export class List_Field extends Generic_Field {
