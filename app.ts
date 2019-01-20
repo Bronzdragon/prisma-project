@@ -45,14 +45,17 @@ class Schema {
 
     result += (
 `type query {
-${this.types.map(type => `\t${type.name}: ${type.name}!`).join("\n")}
-${this.types.map(type => `\t${type.name}: [${type.name}!]!`).join("\n")}
+${this.types.reduce((acc, curr) => [
+  ...acc,
+  `  ${curr.name}: ${curr.name}!`,
+  `  ${curr.name}: [${curr.name}!]!`
+], []).join("\n")}
 }
 
 `);
 
     result += this.types
-      .map(model => model.toString())
+      .map(type => type.toString())
       .join("\n\n");
 
     return result;
@@ -76,10 +79,12 @@ class Type {
   }
 
   public toString(): string {
-    return `Name: ${this.name}\n`
-    + this.properties
-      .map(prop => "\t" + prop.toString())
-      .join("\n");
+    return (
+`type ${this.name}: {
+${this.properties
+  .map(prop => `  ${prop}`)
+  .join("\n")}
+}`);
   }
 }
 
@@ -93,7 +98,7 @@ class Property {
   }
 
   public toString(): string {
-    return ( `${this.name} (Type: ${this.type})`);
+    return ( `${this.name}: ${this.type}`);
   }
 }
 
