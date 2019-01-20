@@ -1,5 +1,3 @@
-import { graphql, buildSchema, printSchema } from "graphql";
-// import  model from "datamodel";
 import * as fs from "fs";
 import Field_Types, { getFieldType } from "./scalar_fields";
 
