@@ -88,3 +88,22 @@ class Property {
     return ( `${this.name} (Type: ${this.type})`);
   }
 }
+
+class Enum {
+  public readonly name: string;
+  public readonly values: Array<string>;
+
+  constructor(name: string, body: string) {
+    this.name = name;
+
+    // Valid enum entries can only contain letters, numbers and underscores. They also must start with an uppercase letter.
+    this.values = body
+      .split(',')
+      .map(entry => entry.trim())
+      .filter(entry => /^[A-Z][\w_]*$/.test(entry));
+  }
+
+  public toString(): string {
+    return "TODO";
+  }
+}
