@@ -9,6 +9,8 @@ type Post {
   id: ID! @unique
   createdAt: DateTime!
   published: Boolean! @default(value: "false")
+  text: String
   title: String!
-  author: String!
+  author: String
+  comments: [String]!
 }
