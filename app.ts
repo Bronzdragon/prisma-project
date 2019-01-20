@@ -43,6 +43,14 @@ class Schema {
     let result: string = "";
     result += `# timestamp: ${new Date().toString()}\n\n`;
 
+    result += (
+`type query {
+${this.types.map(type => `\t${type.name}: ${type.name}!`).join("\n")}
+${this.types.map(type => `\t${type.name}: [${type.name}!]!`).join("\n")}
+}
+
+`);
+
     result += this.types
       .map(model => model.toString())
       .join("\n\n");
