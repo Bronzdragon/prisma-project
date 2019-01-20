@@ -1,11 +1,9 @@
 import * as fs from "fs";
 import Field_Types, { getFieldType } from "./scalar_fields";
 
-// const fs = require('fs'), filename = process.argv[2];
-fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): void {
+const filename = process.argv[2] || "./datamodel.prisma";
+fs.readFile(filename, "utf8", function(err :any , data: string): void {
   if (err) { throw err; }
-
-  // console.log(text);
 
   let schema: Schema = new Schema(data);
 

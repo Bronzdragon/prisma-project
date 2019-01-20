@@ -8,9 +8,10 @@
   },
   "author": "walter.bormans@gmail.com",
   "license": "UNLICENSED",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.4"
   }
 }
