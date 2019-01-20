@@ -3,24 +3,18 @@ export default Field_Types;
 
 export function getFieldType(body: string): Field_Types {
   
-  const list_test = /^\s*\[\s*\w+\s*!?\s*\](!?.*)$/;
-  if (list_test.test(body)){
-    
-    return List_Field.fromString(body);;
+  const list_test = /^\s*\[\s*(\w+\s*!?)\s*\](!?.*)$/;
+  let result: Array<string>;
+  if (result = body.match(list_test)){
+    let list_type = getFieldType(result[1]);
+    const {is_required, is_unique, default_value: value} = parseTypeArguments(result[2]);
+    return new List_Field(list_type, is_required, is_unique, value);
   }
   
   const regex = /^\s*(\w+)(!?.*)$/;
   const [, type, args] = body.match(regex).map(str => str.toLowerCase().trim());
   
-  const is_required: boolean = /^!/.test(args);
-  const is_unique: boolean = /@unique/.test(args);
-  let value: string, result: Array<string>;
-  if (result = args.match(/@default\s*\(\s*value\s*:\s*"(.*?)"\s*\)/)) {
-    value = result[1];
-  }
-  
-  // console.log("Creating new type! " + type);
-  
+  const {is_required, is_unique, default_value: value} = parseTypeArguments(args);
   
   switch (type) {
     case "string":
@@ -50,6 +44,20 @@ export function getFieldType(body: string): Field_Types {
   }
 }
 
+function parseTypeArguments(raw: string): args {
+  const is_required: boolean = /^!/.test(raw);
+  const is_unique: boolean = /@unique/.test(raw);
+  let value: string, result: Array<string>;
+  if (result = raw.match(/@default\s*\(\s*value\s*:\s*"(.*?)"\s*\)/)) {
+    value = result[1];
+  }
+
+  return ({
+    is_required: is_required,
+    is_unique: is_unique,
+    default_value: value
+  });
+}
 
 interface args {
   is_required: boolean;
@@ -111,16 +119,15 @@ export class DateTime_Field extends Generic_Field {
 export class List_Field extends Generic_Field {
   protected readonly TYPENAME = "Array";
   private list_type: Field_Types;
+
+  constructor(list_type: Field_Types, is_required = false, is_unique = false, default_value?: any){
+    super(is_required, is_unique, default_value)
+    
+    this.list_type = list_type;
+  }
   
   public toString(): string {
     return `[${this.list_type}]${this.is_required ? '!':''}`;
-  }
-  
-  static fromString(body: string): List_Field {
-    
-    console.log(body);
-    
-    return new List_Field();
   }
 }
 
