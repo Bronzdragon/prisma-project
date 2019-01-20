@@ -1,15 +1,7 @@
 import { graphql, buildSchema, printSchema } from "graphql";
 // import  model from "datamodel";
 import * as fs from "fs";
-import Field_Types, {
-  ID_Field,
-  Boolean_Field,
-  Int_Field, Float_Field,
-  String_Field,
-  DateTime_Field,
-  List_Field,
-  Object_Field
-} from "./scalar_fields";
+import Field_Types, { getFieldType } from "./scalar_fields";
 
 // const fs = require('fs'), filename = process.argv[2];
 fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): void {
@@ -89,7 +81,7 @@ class Property {
 
   constructor(name: string, body: string) {
     this.name = name;
-    // this.type = body;
+    this.type = getFieldType(body);
   }
 
   public toString(): string {
