@@ -1,7 +1,8 @@
-type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | Long_Field | List_Field | JSON_Field | Other_Field;
+type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | Long_Field | List_Field | JSON_Field | ENUM_Field | Object_Field;
 export default Field_Types;
 
-export function getFieldType(body: string): Field_Types {
+export function getFieldType(body: string, type_list = [], enum_list = []): Field_Types {
+  // const field_type_names = ["string", "int", "float", "boolean", "datetime", "json", "id", "list"];
   
   const list_test = /^\s*\[\s*(\w+\s*!?)\s*\](!?.*)$/;
   let result: Array<string>;
@@ -42,8 +43,12 @@ export function getFieldType(body: string): Field_Types {
       return new ID_Field(is_required, is_unique, value);
     
     default:
+      if (enum_list.includes(type)) {
+        return new ENUM_Field(type, is_required, is_unique, value);
+      } else if (type_list.includes(type)) {
+        return new Object_Field(type, is_required, is_unique, value);
+      }
       // We do no checking to see if the relation is valid (a defined Enum or Type)
-      return new Other_Field(type, is_required, is_unique, value);
   }
 }
 
@@ -142,7 +147,16 @@ export class JSON_Field extends Generic_Field {
   protected readonly TYPENAME = "JSON";
 }
 
-export class Other_Field extends Generic_Field {
+export class ENUM_Field extends Generic_Field {
+  protected readonly TYPENAME;
+
+  constructor(type_name: string, is_required = false, is_unique = false, default_value?: any){
+    super(is_required, is_unique, default_value);
+    this.TYPENAME = type_name;
+  }
+}
+
+export class Object_Field extends Generic_Field {
   protected readonly TYPENAME;
 
   constructor(type_name: string, is_required = false, is_unique = false, default_value?: any){

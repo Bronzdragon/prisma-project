@@ -29,11 +29,22 @@ class Schema {
     }
 
     // Collect types
+    let types = []
     let type_info;
     while(type_info = type_regex.exec(datamodel_text)) {
       const [ , type_name, type_body] = type_info;
-      this.types.push(new Type(type_name, type_body));
+      types.push({name: type_name, body: type_body});
     }
+
+    for (const type of types) {
+      this.types.push(new Type(
+        type.name,
+        type.body,
+        types.map(el => el.name),     // Type list
+        this.enums.map(el => el.name) // Enum list
+      ));
+    }
+
   }
 
   public toString(): string {
@@ -74,7 +85,7 @@ class Type {
   public readonly name: string;
   private readonly properties: Array<Property>;
 
-  constructor(name: string, body: string) {
+  constructor(name: string, body: string, type_list = [], enum_list = []) {
     this.name = name;
     const regex: RegExp = /(\w+)\s*:\s*(\S.*\S)\s*/gm;
 
@@ -82,7 +93,7 @@ class Type {
 
     let prop:Array<string>;
     while(prop = regex.exec(body)) {
-      this.properties.push(new Property(prop[1], prop[2]));
+      this.properties.push(new Property(prop[1], prop[2], type_list, enum_list));
     }
   }
 
@@ -100,9 +111,9 @@ class Property {
   public readonly name: string;
   public readonly type: Field_Types;
 
-  constructor(name: string, body: string) {
+  constructor(name: string, body: string, type_list = [], enum_list = []) {
     this.name = name;
-    this.type = getFieldType(body);
+    this.type = getFieldType(body, type_list, enum_list);
   }
 
   public toString(): string {
