@@ -25,11 +25,18 @@ fs.readFile("./datamodel.prisma", "utf8", function(err :any , data: string): voi
 
 class Schema {
   private readonly types : Array<Type>;
+  private readonly enums: Array<Enum>;
 
   constructor(datamodel_text: string) {
     const type_regex: RegExp = /type\s*(\w+)\s*\{([\s\S]+?)\}/gm;
+    const enum_regex: RegExp = /enum\s*(\w+)\s*\{([\s\S]+?)\}/gm;
     this.types = [];
 
+    // Collect enums
+    let enum_name: string, enum_body: string;
+    while([ , enum_name, enum_body] = enum_regex.exec(datamodel_text)) {
+      this.enums.push(new Enum(enum_name, enum_body));
+    }
 
     // Collect types
     let type_name: string, type_body: string;
