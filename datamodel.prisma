@@ -14,3 +14,9 @@ type Post {
   author: User
   comments: [String]!
 }
+
+enum Test {
+  Success
+  Failure
+  Skipped
+}

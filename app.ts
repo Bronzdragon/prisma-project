@@ -50,6 +50,9 @@ class Schema {
       .map(scalar => `scalar ${scalar}`)
       .join("\n\n") + "\n\n";
 
+    // Adds the Enums
+    result += this.enums.join("\n\n") + "\n\n";
+
     // Adds the query block
     result += (
 `type query {
@@ -120,12 +123,18 @@ class Enum {
 
     // Valid enum entries can only contain letters, numbers and underscores. They also must start with an uppercase letter.
     this.values = body
-      .split(',')
+      .split(/\s+/)
       .map(entry => entry.trim())
       .filter(entry => /^[A-Z][\w_]*$/.test(entry));
   }
 
   public toString(): string {
-    return "TODO";
+    return (
+`enum ${this.name} {
+${this.values
+  .map(val => `  ${val.toUpperCase()}`)
+  .join("\n")}
+}`
+    );
   }
 }
