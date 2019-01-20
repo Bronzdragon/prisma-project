@@ -33,14 +33,16 @@ class Schema {
     this.types = [];
 
     // Collect enums
-    let enum_name: string, enum_body: string;
-    while([ , enum_name, enum_body] = enum_regex.exec(datamodel_text)) {
+    let enum_info
+    while(enum_info = enum_regex.exec(datamodel_text)) {
+      let [ , enum_name, enum_body] = enum_info;
       this.enums.push(new Enum(enum_name, enum_body));
     }
 
     // Collect types
-    let type_name: string, type_body: string;
-    while([ , type_name, type_body] = type_regex.exec(datamodel_text)) {
+    let type_info;
+    while(type_info = type_regex.exec(datamodel_text)) {
+      const [ , type_name, type_body] = type_info;
       this.types.push(new Type(type_name, type_body));
     }
   }
