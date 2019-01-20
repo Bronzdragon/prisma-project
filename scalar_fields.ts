@@ -1,7 +1,7 @@
 type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | Array_Field | Object_Field;
 export default Field_Types;
 
-class Generic_Field {
+abstract class Generic_Field {
     protected has_default: boolean = false;
     protected default_value: any;
     protected is_unique: boolean = false;
@@ -9,80 +9,63 @@ class Generic_Field {
 
     protected readonly TYPENAME;
 
-    constructor(parameters) {
-        
+    constructor(is_required = false, is_unique = false, default_value?: any) {
+        this.is_required = is_required;
+        this.is_unique = is_unique;
+
+        this.default_value = default_value;
+        this.has_default = (default_value !== undefined);
     }
 
     public toString(): string {
-        return `${this.TYPENAME}`;
+        let result = "";
+        result += this.TYPENAME;
+        if (this.is_required) { result += '!'; }
+        if (this.is_unique) { result += ' @unique'}
+        if (this.has_default) { result += ` @default(value: "${this.default_value}")`}
+
+        return result;
     }
 }
 
 export class ID_Field extends Generic_Field {
     public readonly TYPENAME = "ID";
-
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
 export class Boolean_Field extends Generic_Field {
     protected readonly TYPENAME = "Boolean";
-
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
 export class Int_Field extends Generic_Field {
     protected readonly TYPENAME = "int";
-    
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
 export class Float_Field extends Generic_Field {
     protected readonly TYPENAME = "Float";
-    
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
 export class String_Field extends Generic_Field {
     protected readonly TYPENAME = "String";
-    
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
 export class DateTime_Field extends Generic_Field {
     protected readonly TYPENAME = "DateTime";
-    
-    constructor(parameters){
-        super(parameters);
-    }
 }
 
-export class Array_Field extends Generic_Field {
+export class List_Field extends Generic_Field {
     protected readonly TYPENAME = "Array";
-    private array_type: Field_Types;
-
-    constructor(parameters){
-        super(parameters);
-    }
+    private list_type: Field_Types;
 
     public toString(): string {
-        return `[${this.array_type.toString()}]${this.is_required ? '!':''}`;
+        return `[${this.list_type}]${this.is_required ? '!':''}`;
+    }
+
+    static from_string(body: string): List_Field {
+        
+        return new List_Field();
     }
 }
 
 export class Object_Field extends Generic_Field {
     protected readonly TYPENAME = "Object";
-    
-    constructor(parameters){
-        super(parameters);
-    }
 }
