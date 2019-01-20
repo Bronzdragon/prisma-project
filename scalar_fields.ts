@@ -42,8 +42,8 @@ export function getFieldType(body: string): Field_Types {
       return new ID_Field(is_required, is_unique, value);
     
     default:
+      // We do no checking to see if the relation is valid (a defined Enum or Type)
       return new Other_Field(type, is_required, is_unique, value);
-      break;
   }
 }
 

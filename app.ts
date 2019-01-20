@@ -61,11 +61,9 @@ ${this.types.reduce((acc, curr) => [
   `  ${curr.name}: ${curr.name}!`,
   `  ${curr.name}: [${curr.name}!]!`
 ], []).join("\n")}
-}
+}\n\n`);
 
-`);
-
-    // Adds additional scalars we support
+    // Adds our type definitions.
     result += this.types
       .map(type => type.toString())
       .join("\n\n");
