@@ -11,6 +11,6 @@ type Post {
   published: Boolean! @default(value: "false")
   text: String
   title: String!
-  author: String
+  author: User
   comments: [String]!
 }

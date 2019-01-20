@@ -1,4 +1,4 @@
-type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | List_Field | JSON_Field | ENUM_Field | Object_Field;
+type Field_Types = ID_Field | Boolean_Field | Int_Field | Float_Field | String_Field | DateTime_Field | List_Field | JSON_Field | Other_Field;
 export default Field_Types;
 
 export function getFieldType(body: string): Field_Types {
@@ -12,35 +12,35 @@ export function getFieldType(body: string): Field_Types {
   }
   
   const regex = /^\s*(\w+)(!?.*)$/;
-  const [, type, args] = body.match(regex).map(str => str.toLowerCase().trim());
+  const [, type, args] = body.match(regex).map(str => str.trim());
   
   const {is_required, is_unique, default_value: value} = parseTypeArguments(args);
   
-  switch (type) {
+  switch (type.toLowerCase()) {
     case "string":
-    return new String_Field(is_required, is_unique, value);
+      return new String_Field(is_required, is_unique, value);
     
     case "int":
-    return new Int_Field(is_required, is_unique, value);
+      return new Int_Field(is_required, is_unique, value);
     
     case "float":
-    return new Float_Field(is_required, is_unique, value);
+      return new Float_Field(is_required, is_unique, value);
     
     case "boolean":
-    return new Boolean_Field(is_required, is_unique, value);
+      return new Boolean_Field(is_required, is_unique, value);
     
     case "datetime":
-    return new DateTime_Field(is_required, is_unique, value);
+      return new DateTime_Field(is_required, is_unique, value);
     
     case "json":
-    return new JSON_Field(is_required, is_unique, value);
+      return new JSON_Field(is_required, is_unique, value);
     
     case "id":
-    return new ID_Field(is_required, is_unique, value);
+      return new ID_Field(is_required, is_unique, value);
     
     default:
-    // Can be enum/object.
-    break;
+      return new Other_Field(type, is_required, is_unique, value);
+      break;
   }
 }
 
@@ -135,10 +135,11 @@ export class JSON_Field extends Generic_Field {
   protected readonly TYPENAME = "JSON";
 }
 
-export class ENUM_Field extends Generic_Field {
-  protected readonly TYPENAME = "ENUM";
-}
+export class Other_Field extends Generic_Field {
+  protected readonly TYPENAME;
 
-export class Object_Field extends Generic_Field {
-  protected readonly TYPENAME = "Object";
+  constructor(type_name: string, is_required = false, is_unique = false, default_value?: any){
+    super(is_required, is_unique, default_value);
+    this.TYPENAME = type_name;
+  }
 }
