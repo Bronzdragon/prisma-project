@@ -48,7 +48,7 @@ export function getFieldType(body: string, type_list = [], enum_list = []): Fiel
       } else if (type_list.includes(type)) {
         return new Object_Field(type, is_required, is_unique, value);
       }
-      // We do no checking to see if the relation is valid (a defined Enum or Type)
+      // If the type is not one of the pre-defined Scalars, and it's not one of the Enums or Types, ignore it.
   }
 }
 

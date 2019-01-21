@@ -7,8 +7,7 @@ fs.readFile(filename, "utf8", function(err :any , data: string): void {
 
   let schema: Schema = new Schema(data);
 
-  console.log(`--Result--\n${schema}`);
-
+  console.log(`${schema}`);
 });
 
 class Schema {
@@ -63,11 +62,10 @@ class Schema {
     // Adds the query block
     result += (
 `type query {
-${this.types.reduce((acc, curr) => [
-  ...acc,
-  `  ${curr.name}: ${curr.name}!`,
-  `  ${curr.name}: [${curr.name}!]!`
-], []).join("\n")}
+${this.types.map(curr => 
+`  ${curr.getQuery(true)}
+  ${curr.getQuery(false)}`
+).join("\n")}
 }\n\n`);
 
     // Adds our type definitions.
@@ -102,6 +100,22 @@ ${this.properties
   .map(prop => `  ${prop}`)
   .join("\n")}
 }`);
+  }
+
+  public getQuery(single: boolean = true): string {
+    if (single) {
+      return `${this.name}: ${this.name}!`;
+    }
+    const args = [
+      {name: "first", type: "int"},
+      {name: "last", type: "int"},
+      {name: "skip", type: "int"}
+    ];
+
+    //users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+    const args_string = args.length > 0 ? `(${args.map(arg => `${arg.name}: ${arg.type}`).join(", ")})` : "";
+
+    return `${this.name}${args_string}: [${this.name}!]!`;;
   }
 }
 
