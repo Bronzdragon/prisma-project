@@ -11,7 +11,7 @@
  3. [x] Add support for list scalar fields, both nullable and nonnullable fields
  4. [x] Add relation fields
  5. [x] Add the top level list fields (for `User` → `query.users`)
- 6. [ ] Add simple scalar arguments (like `first` and `skip`)
+ 6. [x] Add simple scalar arguments (like `first` and `skip`)
  7. [ ] Add all arguments to the queries
  8. [ ] Add all mutations
  9. [ ] Add all subscriptions
